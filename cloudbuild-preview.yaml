@@ -30,7 +30,7 @@ steps:
             --revision-suffix=pr-${_PR_NUMBER}-${SHORT_SHA} \
             --no-traffic
 
-          gcloud run services update-traffic ${_SERVICE_NAME} \
+          gcloud beta run services update-traffic ${_SERVICE_NAME} \
             --platform managed --region ${_REGION} \
             --update-tags=pr-${_PR_NUMBER}=${_SERVICE_NAME}-pr-${_PR_NUMBER}-$SHORT_SHA
 
