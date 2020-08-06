@@ -7,18 +7,6 @@ steps:
       args: ['push', 
              'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}' ]
 
-
-    # DEBUG -- fresh build of set-check-status each time for testing.
-    #- id: 'debug  '
-    #  name: 'gcr.io/cloud-builders/docker'
-    #  args: ['build', '-t', 
-    #         'gcr.io/${PROJECT_ID}/set-check-status:$SHORT_SHA', 'set-check-status']
-    #- id: 'debug2  '
-    #  name: 'gcr.io/cloud-builders/docker'
-    #  args: ['push', 
-    #         'gcr.io/${PROJECT_ID}/set-check-status:$SHORT_SHA']
-    # ENDDEBUG
-
     - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
       entrypoint: 'bash'
       args: 
