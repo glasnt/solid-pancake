@@ -12,33 +12,33 @@ steps:
       args: 
         - '-c'
         - |
+          URL_TAG=pr-${_PR_NUMBER}
+          IMAGE_TAG=${URL_TAG}-${SHORT_SHA}
+
           gcloud run deploy ${_SERVICE_NAME} \
             --platform managed --region ${_REGION} \
-            --image gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA} \
-            --revision-suffix=pr-${_PR_NUMBER}-${SHORT_SHA} \
+            --image gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${IMAGE_TAG} \
+            --revision-suffix=${IMAGE_TAG} \
             --no-traffic
 
           gcloud beta run services update-traffic ${_SERVICE_NAME} \
             --platform managed --region ${_REGION} \
-            --update-tags=pr-${_PR_NUMBER}=${_SERVICE_NAME}-pr-${_PR_NUMBER}-$SHORT_SHA
-
-          echo $(gcloud run services describe ${_SERVICE_NAME} \
-                  --platform managed --region ${_REGION} \
-                  --format "value(status.address.url)" \
-          ) > /workspace/url.txt
-          cat /workspace/url.txt
+            --update-tags ${URL_TAG}=${_SERVICE_NAME}-${IMAGE_TAG}
 
     - name: 'gcr.io/${PROJECT_ID}/set-check-status' #:$SHORT_SHA'
       entrypoint: bash
       args: 
         - '-c'
         - |
+          URL_TAG=pr-${_PR_NUMBER}
+
           python /app/set-check-status.py \
             --project-id ${PROJECT_ID} \
+            --region ${_REGION} \
+            --service ${_SERVICE_NAME} \ 
+            --tag ${URL_TAG} \
             --repo-name ${_GITHUB_USER}/${REPO_NAME} \
-            --commit-sha ${SHORT_SHA} \
-            --target-tag pr-${_PR_NUMBER} \
-            --service-url $(cat /workspace/url.txt)
+            --commit-sha ${SHORT_SHA}
 
 
 substitutions:
