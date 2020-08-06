@@ -18,9 +18,9 @@ steps:
             --revision-suffix=pr-${_PR_NUMBER}-${SHORT_SHA} \
             --no-traffic
 
-            #gcloud beta run services update-traffic ${_SERVICE_NAME} \
-            #--platform managed --region ${_REGION} \
-            #--update-tags=pr-${_PR_NUMBER}=${_SERVICE_NAME}-pr-${_PR_NUMBER}-$SHORT_SHA
+          gcloud beta run services update-traffic ${_SERVICE_NAME} \
+            --platform managed --region ${_REGION} \
+            --update-tags=pr-${_PR_NUMBER}=${_SERVICE_NAME}-pr-${_PR_NUMBER}-$SHORT_SHA
 
           echo $(gcloud run services describe ${_SERVICE_NAME} \
                   --platform managed --region ${_REGION} \
