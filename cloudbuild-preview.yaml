@@ -12,31 +12,31 @@ steps:
       args: 
         - '-c'
         - |
-          URL_TAG=pr-${_PR_NUMBER}
-          IMAGE_TAG=${URL_TAG}-${SHORT_SHA}
+          _URL_TAG=pr-${_PR_NUMBER}
+          _IMAGE_TAG=${_URL_TAG}-${SHORT_SHA}
 
           gcloud run deploy ${_SERVICE_NAME} \
             --platform managed --region ${_REGION} \
-            --image gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${IMAGE_TAG} \
-            --revision-suffix=${IMAGE_TAG} \
+            --image gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_IMAGE_TAG} \
+            --revision-suffix=${_IMAGE_TAG} \
             --no-traffic
 
           gcloud beta run services update-traffic ${_SERVICE_NAME} \
             --platform managed --region ${_REGION} \
-            --update-tags ${URL_TAG}=${_SERVICE_NAME}-${IMAGE_TAG}
+            --update-tags ${URL_TAG}=${_SERVICE_NAME}-${_IMAGE_TAG}
 
     - name: 'gcr.io/${PROJECT_ID}/set-check-status' #:$SHORT_SHA'
       entrypoint: bash
       args: 
         - '-c'
         - |
-          URL_TAG=pr-${_PR_NUMBER}
+          _URL_TAG=pr-${_PR_NUMBER}
 
           python /app/set-check-status.py \
             --project-id ${PROJECT_ID} \
             --region ${_REGION} \
             --service ${_SERVICE_NAME} \ 
-            --tag ${URL_TAG} \
+            --tag ${_URL_TAG} \
             --repo-name ${_GITHUB_USER}/${REPO_NAME} \
             --commit-sha ${SHORT_SHA}
 
