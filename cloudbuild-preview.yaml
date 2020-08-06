@@ -12,7 +12,7 @@ steps:
       args: ['run', 'deploy', '${_SERVICE_NAME}', 
              '--platform', 'managed', '--region', '${_REGION}',
              '--image', 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}',
-             '--revision-suffix ', 'pr-${_PR_NUMBER}-${SHORT_SHA}',
+             '--revision-suffix', 'pr-${_PR_NUMBER}-${SHORT_SHA}',
              '--no-traffic']
     
     - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
