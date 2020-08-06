@@ -21,5 +21,4 @@ steps:
 substitutions:
     _SERVICE_NAME: solid-pancake
     _REGION: us-central1
-    _GITHUB_USER: glasnt
 
