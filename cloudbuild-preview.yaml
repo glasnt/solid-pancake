@@ -24,8 +24,20 @@ steps:
       args: 
         - '-c'
         - |
-          gcloud run deploy ${_SERVICE_NAME} --platform managed --region ${_REGION} --image gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA} --revision-suffix=pr-${_PR_NUMBER}-${SHORT_SHA} --no-traffic
-          echo $(gcloud run services describe ${_SERVICE_NAME} --platform managed --region ${_REGION} --format "value(status.address.url)") > /workspace/url.txt
+          gcloud run deploy ${_SERVICE_NAME} \
+            --platform managed --region ${_REGION} \
+            --image gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA} 
+            --revision-suffix=pr-${_PR_NUMBER}-${SHORT_SHA} \
+            --no-traffic
+
+          gcloud run services update-traffic ${_SERVICE_NAME} \
+            --platform managed --region ${_REGION} \
+            --update-tags=pr-${_PR_NUMBER}=${_SERVICE_NAME}-pr-${_PR_NUMBER}-$SHORT_SHA",
+
+          echo $(gcloud run services describe ${_SERVICE_NAME} \
+                  --platform managed --region ${_REGION} \
+                  --format "value(status.address.url)" \
+          ) > /workspace/url.txt
           cat /workspace/url.txt
 
     - name: 'gcr.io/${PROJECT_ID}/set-check-status' #:$SHORT_SHA'
@@ -34,12 +46,6 @@ steps:
         - '-c'
         - |
           cat /workspace/url.txt 
-          echo python /app/set-check-status.py \
-            --project-id ${PROJECT_ID} \
-            --repo-name ${_GITHUB_USER}/${REPO_NAME} \
-            --commit-sha ${SHORT_SHA} \
-             --service-url $(cat /workspace/url.txt) \
-            --target-tag pr-${_PR_NUMBER}
 
           python /app/set-check-status.py \
             --project-id ${PROJECT_ID} \
@@ -51,7 +57,6 @@ steps:
 
 substitutions:
     _SERVICE_NAME: solid-pancake
-    #    _PR_NUMBER: "2"
     _REGION: us-central1
     _GITHUB_USER: glasnt
 
