@@ -33,14 +33,12 @@ steps:
       args: 
         - '-c'
         - |
-          cat /workspace/url.txt 
-
           python /app/set-check-status.py \
             --project-id ${PROJECT_ID} \
             --repo-name ${_GITHUB_USER}/${REPO_NAME} \
             --commit-sha ${SHORT_SHA} \
-            --service-url $(cat /workspace/url.txt) \
-            --target-tag pr-${_PR_NUMBER}
+            --target-tag pr-${_PR_NUMBER} \
+            --service-url $(cat /workspace/url.txt)
 
 
 substitutions:
