@@ -11,6 +11,7 @@ steps:
       entrypoint: 'gcloud'
       args: ['run', 'deploy', '${_SERVICE_NAME}',
        '--platform', 'managed', '--region', '${_REGION}',
+       '--allow-unauthenticated',
        '--image', 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}']
 
     # force test
@@ -20,6 +21,6 @@ steps:
        '--platform', 'managed', '--region', '${_REGION}']
 
 substitutions:
-    _SERVICE_NAME: solid-pancake
+    _SERVICE_NAME: myservice
     _REGION: us-central1
 
